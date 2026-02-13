@@ -122,7 +122,7 @@ class UserRepository {
   }
 
   async updateProfileImage(userId, imageUrl) {
-    const sql = "UPDATE usuarios SET foto_perfil = ? WHERE id = ?";
+    const sql = "UPDATE usuarios SET perfil = ? WHERE id = ?";
 
     return new Promise((resolve, reject) => {
       connection.query(sql, [imageUrl, userId], (err, result) => {

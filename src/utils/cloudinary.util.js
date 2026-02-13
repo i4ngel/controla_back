@@ -2,35 +2,34 @@ const cloudinary = require("../config/cloudinary");
 const fs = require("fs").promises;
 
 class CloudinaryUtil {
-  async uploadImage(filePath, options = {}) {
-    try {
-      const defaultOptions = {
-        folder: "perfil_users",
-        use_filename: true,
-        unique_filename: false,
-        overwrite: true,
-        resource_type: "auto",
-      };
-
-      const uploadOptions = { ...defaultOptions, ...options };
-
-      const result = await cloudinary.uploader.upload(filePath, uploadOptions);
-
-      await this.deleteLocalFile(filePath);
-
-      return {
-        url: result.secure_url,
-        publicId: result.public_id,
-        format: result.format,
-        width: result.width,
-        height: result.height,
-      };
-    } catch (error) {
-      await this.deleteLocalFile(filePath);
-      throw new Error(`Error al subir imagen a Cloudinary: ${error.message}`);
-    }
+  async uploadImage(fileBuffer) {
+    return new Promise((resolve, reject) => {
+      const stream = cloudinary.uploader.upload_stream(
+        {
+          folder: "perfil_users",
+          resource_type: "image",
+        },
+        (error, result) => {
+          if (error) {
+            return reject(
+              new Error(`Error al subir imagen a Cloudinary: ${error.message}`)
+            );
+          }
+  
+          resolve({
+            url: result.secure_url,
+            publicId: result.public_id,
+            format: result.format,
+            width: result.width,
+            height: result.height,
+          });
+        }
+      );
+  
+      stream.end(fileBuffer);
+    });
   }
-
+  
   async deleteImage(publicId) {
     try {
       const result = await cloudinary.uploader.destroy(publicId);

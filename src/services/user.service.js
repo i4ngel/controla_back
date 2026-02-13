@@ -65,9 +65,7 @@ class UserService {
       }
     }
 
-    const uploadResult = await cloudinaryUtil.uploadImage(file.path, {
-      folder: "perfil_users",
-    });
+    const uploadResult = await cloudinaryUtil.uploadImage(file.buffer);
 
     await userRepository.updateProfileImage(userId, uploadResult.url);
 
@@ -182,6 +180,22 @@ class UserService {
       message: "Estado del usuario actualizado correctamente",
     };
   }
+
+  async verifyPassword(userId, password) {
+    const user = await userRepository.findById(userId);
+  
+    if (!user) {
+      throw new Error("Usuario no encontrado");
+    }
+  
+    const isPasswordValid = await passwordUtil.compare(
+      password,
+      user.password
+    );
+  
+    return isPasswordValid;
+  }
+  
 }
 
 module.exports = new UserService();

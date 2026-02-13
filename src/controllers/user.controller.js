@@ -98,7 +98,7 @@ class UserController {
     try {
       const { password } = req.body;
       const result = await userService.desactivateAccount(req.userId, password);
-  
+
       res.status(200).json({
         success: true,
         ...result,
@@ -111,7 +111,7 @@ class UserController {
       });
     }
   }
-  
+
   async getAllUsers(req, res) {
     try {
       const filters = {
@@ -167,6 +167,32 @@ class UserController {
       res.status(400).json({
         success: false,
         message: error.message || "Error al actualizar estado del usuario",
+      });
+    }
+  }
+
+  async verifyPassword(req, res) {
+    try {
+      const { password } = req.body;
+
+      if (!password) {
+        return res.status(400).json({
+          success: false,
+          message: "La contraseña es requerida",
+        });
+      }
+
+      const isValid = await userService.verifyPassword(req.userId, password);
+
+      return res.status(200).json({
+        success: true,
+        isValid,
+      });
+    } catch (error) {
+      console.error("Error en verifyPassword:", error);
+      return res.status(400).json({
+        success: false,
+        message: error.message || "Error al verificar contraseña",
       });
     }
   }

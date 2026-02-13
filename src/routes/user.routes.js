@@ -241,7 +241,7 @@ router.delete("/profile", verifyToken, userController.deleteAccount);
  *       401:
  *         description: Token requerido
  */
-router.put("/profile", verifyToken, userController.desactivateAccount);
+router.put("/desactivate", verifyToken, userController.desactivateAccount);
 
 /**
  * @swagger
@@ -364,6 +364,49 @@ router.put(
   verifyToken,
   verifyAdmin,
   userController.updateUserStatus
+);
+
+/**
+ * @swagger
+ * /api/user/profile/verify-password:
+ *   post:
+ *     summary: Verificar contraseña del usuario autenticado
+ *     tags: [User]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - password
+ *             properties:
+ *               password:
+ *                 type: string
+ *                 example: password123
+ *     responses:
+ *       200:
+ *         description: Resultado de la verificación
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 isValid:
+ *                   type: boolean
+ *       400:
+ *         description: Error en la verificación
+ *       401:
+ *         description: Token requerido
+ */
+router.post(
+  "/profile/verify-password",
+  verifyToken,
+  userController.verifyPassword
 );
 
 module.exports = router;
