@@ -135,6 +135,25 @@ class UserService {
     };
   }
 
+  async desactivateAccount(userId, password) {
+    const user = await userRepository.findById(userId);
+  
+    if (!user) {
+      throw new Error("Usuario no encontrado");
+    }
+  
+    const isPasswordValid = await passwordUtil.compare(password, user.password);
+    if (!isPasswordValid) {
+      throw new Error("Contraseña incorrecta");
+    }
+  
+    await userRepository.updateStatus(userId, 0);
+  
+    return {
+      message: "Cuenta desactivada correctamente",
+    };
+  }
+  
   async getAllUsers(filters = {}) {
     const users = await userRepository.findAll(filters);
     return users.map((user) => user.toPublicJSON());

@@ -58,12 +58,6 @@ const validateChangePassword = [
     .isLength({ min: 6 })
     .withMessage("La nueva contraseña debe tener al menos 6 caracteres"),
 
-  body("confirmPassword")
-    .notEmpty()
-    .withMessage("La confirmación de contraseña es requerida")
-    .custom((value, { req }) => value === req.body.newPassword)
-    .withMessage("Las contraseñas no coinciden"),
-
   handleValidationErrors,
 ];
 

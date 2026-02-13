@@ -94,6 +94,24 @@ class UserController {
     }
   }
 
+  async desactivateAccount(req, res) {
+    try {
+      const { password } = req.body;
+      const result = await userService.desactivateAccount(req.userId, password);
+  
+      res.status(200).json({
+        success: true,
+        ...result,
+      });
+    } catch (error) {
+      console.error("Error en desactivateAccount:", error);
+      res.status(400).json({
+        success: false,
+        message: error.message || "Error al desactivar cuenta",
+      });
+    }
+  }
+  
   async getAllUsers(req, res) {
     try {
       const filters = {

@@ -161,15 +161,11 @@ router.put(
  *             required:
  *               - currentPassword
  *               - newPassword
- *               - confirmPassword
  *             properties:
  *               currentPassword:
  *                 type: string
  *                 example: password123
  *               newPassword:
- *                 type: string
- *                 example: newpassword456
- *               confirmPassword:
  *                 type: string
  *                 example: newpassword456
  *     responses:
@@ -216,6 +212,36 @@ router.put(
  *         description: Token requerido
  */
 router.delete("/profile", verifyToken, userController.deleteAccount);
+
+/**
+ * @swagger
+ * /api/user/desactivate:
+ *   put:
+ *     summary: Desactivar cuenta de usuario
+ *     tags: [User]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - password
+ *             properties:
+ *               password:
+ *                 type: string
+ *                 description: Contraseña del usuario para confirmar desactivación
+ *     responses:
+ *       200:
+ *         description: Cuenta desactivada correctamente
+ *       400:
+ *         description: Contraseña incorrecta
+ *       401:
+ *         description: Token requerido
+ */
+router.put("/profile", verifyToken, userController.desactivateAccount);
 
 /**
  * @swagger
